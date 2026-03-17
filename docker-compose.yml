@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: takehometest-hungryhub
+      MYSQL_USER: hungryhub
+      MYSQL_PASSWORD: hungryhub
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+
+  api:
+    build: .
+    depends_on:
+      - db
+    environment:
+      DB_USER: hungryhub
+      DB_PASSWORD: hungryhub
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: takehometest-hungryhub
+      API_KEY: supersecretapikey
+    ports:
+      - "8000:8000"
