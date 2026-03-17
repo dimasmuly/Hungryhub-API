@@ -1,6 +1,6 @@
 # HungryHub Take-Home: Restaurant Menu Management API
 
-REST API untuk mengelola restoran dan menu item, dibangun dengan FastAPI, SQLAlchemy, dan MySQL.
+REST API for managing restaurants and menu items, built with FastAPI, SQLAlchemy, and MySQL.
 
 ## Tech Stack
 
@@ -12,46 +12,49 @@ REST API untuk mengelola restoran dan menu item, dibangun dengan FastAPI, SQLAlc
 - Docker & Docker Compose
 - Pytest
 
-## Fitur Utama
+## Main Features
 
-- CRUD Restaurant
-- CRUD Menu Item (per restaurant)
-- Relasi one-to-many antara Restaurant dan Menu Item
-- Validasi input dengan error message yang jelas
-- Status code HTTP yang sesuai (200, 201, 400, 404, 401, 204)
-- Seed data awal:
-  - 2 restoran
-  - Masing-masing minimal 5 menu item
-- Autentikasi sederhana dengan API key (header `X-API-Key`)
-- Paginasi untuk list endpoint
-- Filter dan search menu item:
+- CRUD for Restaurant
+- CRUD for Menu Item (per restaurant)
+- One-to-many relationship between Restaurant and Menu Item
+- Input validation with clear error messages
+- Proper HTTP status codes (200, 201, 400, 404, 401, 204)
+- Seed data:
+  - 2 restaurants
+  - Each with at least 5 menu items
+- Simple authentication using an API key (header `X-API-Key`)
+- Pagination for list endpoints
+- Filter and search on menu items:
   - Filter by `category`
-  - Search by `name` (parameter `search`)
+  - Search by `name` (query parameter `search`)
 
-## Struktur Proyek
+## Project Structure
 
-- `app/config.py` – konfigurasi aplikasi (DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME, API_KEY)
-- `app/database.py` – koneksi database dan session
-- `app/models.py` – model SQLAlchemy (Restaurant, MenuItem)
-- `app/schemas.py` – Pydantic schema untuk request/response
-- `app/main.py` – definisi FastAPI app dan semua endpoint
-- `tests/` – basic integration tests dengan Pytest
-- `Dockerfile`, `docker-compose.yml` – setup Docker
+- `app/config.py` – application configuration (DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME, API_KEY)
+- `app/database.py` – database connection and session
+- `app/models.py` – SQLAlchemy models (Restaurant, MenuItem)
+- `app/schemas.py` – Pydantic schemas for request/response
+- `app/main.py` – FastAPI application and router registration
+- `app/routers/` – route definitions (restaurants, menu items)
+- `app/services/` – service layer / business logic
+- `app/initial_data.py` – database seeding on startup
+- `tests/` – basic integration tests with Pytest
+- `Dockerfile`, `docker-compose.yml` – Docker setup
 
-## Menjalankan Secara Lokal (Tanpa Docker)
+## Running Locally (Without Docker)
 
-1. Buat dan aktifkan virtualenv (opsional tapi direkomendasikan).
+1. Create and activate a virtualenv (optional but recommended).
 
-2. Instal dependency:
+2. Install dependencies:
 
    ```bash
    pip install -r requirements.txt
    ```
 
-3. Pastikan MySQL berjalan dan sudah ada database:
+3. Make sure MySQL is running and the database exists:
 
-   - Nama database: `takehometest-hungryhub`
-   - Contoh SQL:
+- Database name: `takehometest-hungryhub`
+- Example SQL:
 
      ```sql
      CREATE DATABASE `takehometest-hungryhub` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -60,7 +63,7 @@ REST API untuk mengelola restoran dan menu item, dibangun dengan FastAPI, SQLAlc
      FLUSH PRIVILEGES;
      ```
 
-4. Buat file `.env` di root (wajib untuk konfigurasi MySQL dan API key):
+4. Create a `.env` file in the project root (required for MySQL and API key configuration):
 
    ```env
    DB_USER=hungryhub
@@ -71,33 +74,33 @@ REST API untuk mengelola restoran dan menu item, dibangun dengan FastAPI, SQLAlc
    API_KEY=supersecretapikey
    ```
 
-5. Jalankan aplikasi:
+5. Run the application:
 
    ```bash
    uvicorn app.main:app --reload
    ```
 
-6. API akan tersedia di:
+6. The API will be available at:
 
-   - `http://localhost:8000`
-   - Dokumentasi Swagger otomatis: `http://localhost:8000/docs`
+- `http://localhost:8000`
+- Automatic Swagger documentation: `http://localhost:8000/docs`
 
-## Menjalankan dengan Docker
+## Running with Docker
 
-Pastikan Docker dan Docker Compose terinstal.
+Make sure Docker and Docker Compose are installed.
 
-1. Jalankan:
+1. Run:
 
    ```bash
    docker-compose up --build
    ```
 
-2. Service:
+2. Services:
 
-   - API: `http://localhost:8000`
-   - MySQL: `localhost:3306`
+- API: `http://localhost:8000`
+- MySQL: `localhost:3306`
 
-3. Variable penting di `docker-compose.yml`:
+3. Important environment variables in `docker-compose.yml`:
 
 - Database:
   - `MYSQL_DATABASE=takehometest-hungryhub`
@@ -113,27 +116,27 @@ Pastikan Docker dan Docker Compose terinstal.
 
 ## Seed Data
 
-Pada event startup, aplikasi akan:
+On application startup:
 
-- Membuat tabel jika belum ada
-- Mengecek jumlah restoran
-- Jika 0, otomatis insert:
-  - Restoran `Bangkok Spice` dengan 5 menu item
-  - Restoran `Chiang Mai Garden` dengan 5 menu item
+- Create tables if they do not exist
+- Check the number of restaurants
+- If 0, automatically insert:
+  - Restaurant `Bangkok Spice` with 5 menu items
+  - Restaurant `Chiang Mai Garden` with 5 menu items
 
-Seed terdapat di `app/main.py` dalam fungsi `init_db_and_seed`.
+Seeding logic is in `app/initial_data.py` inside `seed_data()`.
 
-## Autentikasi
+## Authentication
 
-Semua endpoint membutuhkan API key sederhana via header:
+All endpoints require a simple API key via header:
 
 - Header: `X-API-Key: supersecretapikey`
 
-Jika header tidak ada atau value salah, API akan mengembalikan:
+If the header is missing or the value is incorrect, the API returns:
 
-- `401 Unauthorized` dengan pesan `Invalid API key`
+- `401 Unauthorized` with message `Invalid API key`
 
-## Endpoint API
+## API Endpoints
 
 ### Restaurant
 
