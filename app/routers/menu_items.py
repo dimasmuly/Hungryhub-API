@@ -1,10 +1,16 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Path
 
 from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.dependencies import api_key_auth
-from app.schemas import MenuItemCreate, MenuItemUpdate, MenuItemRead, PaginatedMenuItems
+from app.schemas import (
+    MenuItemCreate,
+    MenuItemUpdate,
+    MenuItemRead,
+    PaginatedMenuItems,
+    MessageResponse,
+)
 from app.services.menu_items import MenuItemService
 
 
@@ -40,10 +46,11 @@ def update_menu_item(
 
 @router.delete(
     "/{menu_item_id}",
-    status_code=status.HTTP_204_NO_CONTENT,
+    response_model=MessageResponse,
+    status_code=status.HTTP_200_OK,
 )
 def delete_menu_item(
-    menu_item_id: int,
+    menu_item_id: int = Path(..., ge=1),
     service: MenuItemService = Depends(get_menu_item_service),
 ):
     deleted = service.delete(menu_item_id)
@@ -52,4 +59,4 @@ def delete_menu_item(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Menu item not found",
         )
-
+    return MessageResponse(message="Menu item deleted successfully")

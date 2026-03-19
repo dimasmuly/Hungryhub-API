@@ -73,3 +73,6 @@ class PaginatedMenuItems(BaseModel):
     page_size: int
     total: int
 
+
+class MessageResponse(BaseModel):
+    message: str

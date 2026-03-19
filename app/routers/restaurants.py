@@ -12,6 +12,7 @@ from app.schemas import (
     PaginatedMenuItems,
     MenuItemCreate,
     MenuItemRead,
+    MessageResponse,
 )
 from app.services.restaurants import RestaurantService
 from app.services.menu_items import MenuItemService
@@ -101,10 +102,11 @@ def update_restaurant(
 
 @router.delete(
     "/{restaurant_id}",
-    status_code=status.HTTP_204_NO_CONTENT,
+    response_model=MessageResponse,
+    status_code=status.HTTP_200_OK,
 )
 def delete_restaurant(
-    restaurant_id: int,
+    restaurant_id: int = Path(..., ge=1),
     service: RestaurantService = Depends(get_restaurant_service),
 ):
     deleted = service.delete(restaurant_id)
@@ -113,6 +115,7 @@ def delete_restaurant(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Restaurant not found",
         )
+    return MessageResponse(message="Restaurant deleted successfully")
 
 
 @router.get(
